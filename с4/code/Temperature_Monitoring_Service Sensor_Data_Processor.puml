@@ -1,0 +1,11 @@
+@startuml
+actor Sensor as sensor
+participant SensorDataProcessor as processor
+participant TemperatureStorage as storage
+database TemperatureDB as db
+
+sensor -> processor : sendTemperatureData(data)
+processor -> processor : validateData(data)
+processor -> storage : storeTemperature(data)
+storage -> db : insert(data)
+@enduml

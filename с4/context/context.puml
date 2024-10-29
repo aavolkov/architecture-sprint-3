@@ -1,0 +1,26 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(user, "Пользователь", "Пользователь системы умного дома")
+System_Boundary(monolith, "Монолитное приложение") {
+
+    System_Boundary(deviceControl, "Домен управления устройствами") {
+        System(heatingSystem, "Система управления отоплением", "Позволяет управлять отоплением в доме")
+    }
+
+    System_Boundary(monitoring, "Домен мониторинга") {
+        System(temperatureMonitor, "Мониторинг температуры", "Собирает данные о температуре с датчиков")
+    }
+
+    System_Boundary(userAccess, "Домен пользователя и управления доступом") {
+        System(userManagement, "Управление пользователями", "Обеспечивает аутентификацию и авторизацию")
+    }
+}
+
+System_Ext(sensor, "Датчик температуры", "Передает данные о температуре в систему")
+
+user -> heatingSystem : Управление отоплением
+user -> temperatureMonitor : Просмотр температуры
+sensor --> temperatureMonitor : Передача данных о температуре
+
+@enduml

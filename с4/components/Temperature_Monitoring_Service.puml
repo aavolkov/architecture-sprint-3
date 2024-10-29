@@ -1,0 +1,14 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(monitoringService, "Temperature Monitoring Service") {
+    Component(api, "Monitoring API", "Spring REST", "Обеспечивает доступ к данным температуры")
+    Component(sensorDataProcessor, "Sensor Data Processor", "Java Service", "Обрабатывает данные, поступающие от датчиков")
+    Component(temperatureStorage, "Temperature Storage", "Java Service", "Отслеживает и хранит данные о температуре")
+    ComponentDb(monitoringDb, "Temperature DB", "PostgreSQL", "Хранит данные о температуре и истории показаний")
+
+    Rel(api, sensorDataProcessor, "Запрос данных температуры")
+    Rel(sensorDataProcessor, temperatureStorage, "Обработка данных от датчиков")
+    Rel(temperatureStorage, monitoringDb, "Чтение и запись данных температуры")
+}
+@enduml

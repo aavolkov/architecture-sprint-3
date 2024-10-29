@@ -1,0 +1,60 @@
+@startuml
+
+entity User {
+    *id : int
+    --
+    username : string
+    email : string
+    password : string
+    created_at : datetime
+}
+
+entity House {
+    *id : int
+    --
+    user_id : int
+    address : string
+    created_at : datetime
+}
+
+entity Device {
+    *id : int
+    --
+    type_id : int
+    house_id : int
+    serial_number : string
+    status : string
+    installed_at : datetime
+}
+
+entity DeviceType {
+    *id : int
+    --
+    name : string
+    description : string
+}
+
+entity Module {
+    *id : int
+    --
+    device_id : int
+    name : string
+    status : string
+}
+
+entity TelemetryData {
+    *id : int
+    --
+    device_id : int
+    timestamp : datetime
+    temperature : float
+    status : string
+}
+
+User ||--o{ House : "владеет"
+House ||--o{ Device : "содержит"
+Device }o--|| DeviceType : "принадлежит"
+Device ||--o{ Module : "включает"
+Device ||--o{ TelemetryData : "генерирует"
+
+@enduml

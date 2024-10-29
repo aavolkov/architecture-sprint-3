@@ -1,0 +1,14 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(deviceService, "Device Management Service") {
+    Component(api, "Device API", "Spring REST", "Обеспечивает доступ к устройствам через API")
+    Component(commandHandler, "Command Handler", "Java Service", "Обрабатывает команды пользователя для управления устройствами")
+    Component(stateManager, "State Manager", "Java Service", "Отслеживает текущее состояние устройств")
+    ComponentDb(deviceDb, "Device DB", "PostgreSQL", "Хранит данные о состоянии устройств")
+
+    Rel(api, commandHandler, "Отправляет команды управления")
+    Rel(commandHandler, stateManager, "Передает изменения состояния")
+    Rel(stateManager, deviceDb, "Чтение и запись состояния")
+}
+@enduml

@@ -1,0 +1,28 @@
+@startuml
+class DeviceAPI {
+    - deviceService : DeviceService
+    + turnOnDevice(deviceId: Long) : void
+    + turnOffDevice(deviceId: Long) : void
+    + setTemperature(deviceId: Long, temperature: Double) : void
+}
+
+class DeviceService {
+    - stateManager : StateManager
+    + executeCommand(command: DeviceCommand) : void
+}
+
+class CommandHandler {
+    + handleCommand(command: DeviceCommand) : void
+}
+
+class StateManager {
+    - deviceDb : DeviceDb
+    + updateDeviceState(deviceId: Long, newState: String) : void
+    + getDeviceState(deviceId: Long) : String
+}
+
+DeviceAPI --> DeviceService
+DeviceService --> CommandHandler
+CommandHandler --> StateManager
+StateManager --> DeviceDb
+@enduml
