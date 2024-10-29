@@ -1,0 +1,28 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Пользователь", "Использует приложение для управления устройствами и мониторинга температуры")
+
+System_Boundary(app, "Smart Home Application") {
+    Container(apiGateway, "API Gateway", "Spring Cloud Gateway", "Управляет доступом ко всем микросервисам")
+    Container(deviceService, "Device Management Service", "Spring Boot", "Управляет устройствами, такими как отопление и освещение")
+    Container(monitoringService, "Temperature Monitoring Service", "Spring Boot", "Собирает данные о температуре от датчиков и предоставляет данные пользователю")
+    Container(userService, "User Management Service", "Spring Boot", "Управляет аутентификацией, авторизацией и профилем пользователя")
+    ContainerDb(deviceDb, "Device DB", "PostgreSQL", "Хранит данные о состоянии устройств")
+    ContainerDb(monitoringDb, "Temperature DB", "PostgreSQL", "Хранит данные о температуре")
+    ContainerDb(userDb, "User DB", "PostgreSQL", "Хранит учетные записи пользователей")
+
+    Container(kafka, "Kafka", "Kafka", "Шина данных для обмена сообщениями между сервисами")
+}
+
+Rel(user, apiGateway, "Запросы на управление устройствами и получение данных")
+Rel(apiGateway, deviceService, "Запросы управления устройствами")
+Rel(apiGateway, monitoringService, "Запросы мониторинга температуры")
+Rel(apiGateway, userService, "Запросы аутентификации и авторизации")
+Rel(deviceService, kafka, "Отправка сообщений")
+Rel(kafka, monitoringService, "Передача данных о событиях")
+Rel(deviceService, deviceDb, "Чтение и запись состояния устройств")
+Rel(monitoringService, monitoringDb, "Чтение и запись данных о температуре")
+Rel(userService, userDb, "Чтение и запись учетных данных пользователей")
+
+@enduml

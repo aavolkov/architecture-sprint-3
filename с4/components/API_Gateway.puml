@@ -1,0 +1,15 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(apiGateway, "API Gateway") {
+    Component(routeManager, "Route Manager", "Java Service", "Маршрутизирует запросы к соответствующим микросервисам")
+    Component(rateLimiter, "Rate Limiter", "Java Service", "Ограничивает количество запросов от пользователей")
+    Component(authProxy, "Auth Proxy", "Java Service", "Проверяет токены и права доступа")
+
+    Rel(routeManager, rateLimiter, "Контролирует количество запросов")
+    Rel(routeManager, authProxy, "Проверка прав доступа")
+    Rel(authProxy, deviceService, "Маршрутизация к Device Management Service")
+    Rel(authProxy, monitoringService, "Маршрутизация к Temperature Monitoring Service")
+    Rel(authProxy, userService, "Маршрутизация к User Management Service")
+}
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+class UserAPI {
+    - authManager : AuthenticationManager
+    + login(username: String, password: String) : User
+    + register(userDetails: UserDetails) : User
+}
+
+class AuthenticationManager {
+    - accessControl : AccessControl
+    - userDb : UserDb
+    + authenticate(username: String, password: String) : User
+    + authorize(userId: Long, permission: String) : boolean
+}
+
+class AccessControl {
+    - userDb : UserDb
+    + checkPermission(userId: Long, permission: String) : boolean
+}
+
+UserAPI --> AuthenticationManager
+AuthenticationManager --> AccessControl
+AccessControl --> UserDb
+AuthenticationManager --> UserDb
+@enduml

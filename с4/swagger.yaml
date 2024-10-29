@@ -1,0 +1,200 @@
+openapi: 3.0.0
+info:
+  title: Smart Home API
+  version: 1.0.0
+  description: API для управления устройствами и телеметрией в экосистеме умного дома.
+
+servers:
+  - url: https://api.smarthome.com
+    description: Основной сервер API
+
+paths:
+  /devices/{device_id}:
+    get:
+      summary: Получение информации об устройстве
+      description: Возвращает подробную информацию о конкретном устройстве по его ID.
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Уникальный идентификатор устройства
+      responses:
+        '200':
+          description: Успешное получение данных об устройстве
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  type:
+                    type: string
+                  house_id:
+                    type: integer
+                  serial_number:
+                    type: string
+                  status:
+                    type: string
+                  installed_at:
+                    type: string
+                    format: date-time
+        '404':
+          description: Устройство не найдено
+
+  /devices/{device_id}/status:
+    put:
+      summary: Обновление состояния устройства
+      description: Позволяет изменить состояние устройства (например, включить или выключить).
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Уникальный идентификатор устройства
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: ["ON", "OFF"]
+                  description: Новое состояние устройства
+      responses:
+        '200':
+          description: Статус устройства успешно обновлен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Device status updated successfully"
+        '404':
+          description: Устройство не найдено
+        '400':
+          description: Неверный запрос
+
+  /devices/{device_id}/commands:
+    post:
+      summary: Отправка команды устройству
+      description: Отправляет команду устройству, например «установить температуру».
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Уникальный идентификатор устройства
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                command:
+                  type: string
+                  example: "set_temperature"
+                  description: Название команды
+                value:
+                  type: number
+                  description: Значение для команды (например, температура)
+      responses:
+        '200':
+          description: Команда успешно отправлена
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Command sent successfully"
+        '404':
+          description: Устройство не найдено
+        '400':
+          description: Неверный запрос
+
+  /devices/{device_id}/telemetry/latest:
+    get:
+      summary: Получение последних данных телеметрии
+      description: Возвращает последнее полученное значение телеметрии для устройства.
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Уникальный идентификатор устройства
+      responses:
+        '200':
+          description: Успешное получение последних данных телеметрии
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                  temperature:
+                    type: number
+                  status:
+                    type: string
+        '404':
+          description: Устройство не найдено
+
+  /devices/{device_id}/telemetry:
+    get:
+      summary: Получение исторических данных телеметрии
+      description: Возвращает исторические данные телеметрии для устройства за определённый период времени.
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Уникальный идентификатор устройства
+        - name: start_time
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: Начало периода для выборки данных
+        - name: end_time
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: Конец периода для выборки данных
+      responses:
+        '200':
+          description: Успешное получение исторических данных телеметрии
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timestamp:
+                      type: string
+                      format: date-time
+                    temperature:
+                      type: number
+                    status:
+                      type: string
+        '404':
+          description: Устройство не найдено
+        '400':
+          description: Неверный запрос
